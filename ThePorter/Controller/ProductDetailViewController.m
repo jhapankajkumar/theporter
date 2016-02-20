@@ -30,6 +30,7 @@
 }
 
 - (void)setProductInfromation {
+    
     self.title =  self.product.name;
     self.productType.text = self.product.type;
     self.productQuantity.text = [NSString stringWithFormat:@"%ld",(long)self.product.quantiy];
@@ -136,16 +137,69 @@
     }];
 }
 - (IBAction)shareButtonClicked:(id)sender {
-}
+    
+        
+        NSArray *objectsToShare = @[self.productName.text,self.product.image_link];
+        
+        UIActivityViewController *controller = [[UIActivityViewController alloc] initWithActivityItems:objectsToShare applicationActivities:nil];
+        NSArray *excludedActivities = @[
+                                        UIActivityTypePostToWeibo,
+                                        UIActivityTypeAddToReadingList, UIActivityTypePostToFlickr,
+                                        UIActivityTypePostToVimeo, UIActivityTypePostToTencentWeibo];
+        controller.excludedActivityTypes = excludedActivities;
+        
+        [controller setCompletionHandler:^(NSString *activityType, BOOL completed)
+         {
+             
+             
+             NSMutableString *messageString = [[NSMutableString alloc]initWithCapacity:0];
+             if ([activityType isEqualToString:@"com.apple.UIKit.activity.SaveToCameraRoll"])
+             {
+                 [messageString appendString:@" Saved"];
+             }
+             else if ([activityType isEqualToString:@"com.apple.UIKit.activity.PostToTwitter"])
+             {
+                 [messageString appendString:@" Posted to twitter"];
+             }
+             else if ([activityType isEqualToString:@"com.apple.UIKit.activity.Mail"])
+             {
+                 [messageString appendString:@" Sent by email"];
+             }
+             else if ([activityType isEqualToString:@"com.apple.UIKit.activity.CopyToPasteboard"])
+             {
+                 [messageString appendString:@" Copied to pasteboard"];
+             }
+             else if ([activityType isEqualToString:@"com.apple.UIKit.activity.AssignToContact"])
+             {
+                 [messageString appendString:@" Assigned to contact"];
+             }
+             else if ([activityType isEqualToString:@"com.apple.UIKit.activity.Message"])
+             {
+                 [messageString appendString:@" Sent via message"];
+             }
+             else if ([activityType isEqualToString:@"com.apple.UIKit.activity.Print"])
+             {
+                 [messageString appendString:@" Sent to printer"];
+             }
+             else if ([activityType isEqualToString:@"com.linkedin.LinkedIn.ShareExtension"])
+             {
+                 [messageString appendString:@" Sent to LinkedIn"];
+             }
+             else if ([activityType isEqualToString:@"net.whatsapp.WhatsApp.ShareExtension"])
+             {
+                 [messageString appendString:@" Sent to WhatsApp"];
+             }
+             
+             if (completed == TRUE)
+             {
+                 UIAlertView *alert = [[UIAlertView alloc]initWithTitle:APPLICATION_NAME message:messageString delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles: nil];
+                 [alert show];
+                 
+             }
+         }];
+        // Present the controller
+        [self presentViewController:controller animated:YES completion:nil];
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
 }
-*/
 
 @end

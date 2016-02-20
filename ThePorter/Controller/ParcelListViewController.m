@@ -13,19 +13,21 @@
 #import "Parcels.h"
 #import "Constants.h"
 #import "SearchResultsTableViewController.h"
-@interface ParcelListViewController ()<UISearchResultsUpdating>
+
+@interface ParcelListViewController ()<UISearchResultsUpdating,UISearchBarDelegate>
+
 @property (strong, nonatomic) NSMutableArray *parcelDataArray;
 @property (nonatomic, assign) SortType defaultSortType;
 @property (nonatomic, assign) OrderBy defaultOrderType;
 @property (nonatomic, strong) UISearchController *searchController;
 @property (nonatomic, strong) NSMutableArray *searchResults;
-
 @property (nonatomic, assign) NSIndexPath *selectedIndexPath;
 
 @end
 
 @implementation ParcelListViewController
 
+#pragma mark - ViewlifeCycle
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self initialSetup];
@@ -38,22 +40,78 @@
     // Dispose of any resources that can be recreated.
 }
 
--(void)initialSetup {
+-(void)viewWillDisappear:(BOOL)animated {
+    
+    if (self.searchController.isActive && ![self.searchController.searchBar.text isEqualToString:@""]) {
+        [self.searchController dismissViewControllerAnimated:NO completion:^{
+            //[self.searchController setActive:NO];
+            self.navigationController.navigationBarHidden = false;
+        }];
+    }
+    
+}
 
+#pragma mark - ActionMethods
+- (IBAction)sortByValue:(id)sender {
+    
+    NSSortDescriptor *sortDescriptor;
+    sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"value"
+                                                 ascending:false];
+    NSArray *sortDescriptors = [NSArray arrayWithObject:sortDescriptor];
+    NSArray *sortedArray = [self.parcelDataArray sortedArrayUsingDescriptors:sortDescriptors];
+    
+    self.parcelDataArray = (NSMutableArray *)sortedArray;
+    [self.parcerListTableView reloadData];
+    
+}
+- (IBAction)sortByName:(id)sender {
+    
+    
+    NSSortDescriptor *sortDescriptor;
+    sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"name"
+                                                 ascending:true];
+    NSArray *sortDescriptors = [NSArray arrayWithObject:sortDescriptor];
+    NSArray *sortedArray = [self.parcelDataArray sortedArrayUsingDescriptors:sortDescriptors];
+    
+    self.parcelDataArray = (NSMutableArray *)sortedArray;
+    [self.parcerListTableView reloadData];
+    
+}
+- (IBAction)sortByWight:(id)sender {
+    
+    NSSortDescriptor *sortDescriptor;
+    sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"weight"
+                                                 ascending:true];
+    NSArray *sortDescriptors = [NSArray arrayWithObject:sortDescriptor];
+    NSArray *sortedArray = [self.parcelDataArray sortedArrayUsingDescriptors:sortDescriptors];
+    
+    self.parcelDataArray = (NSMutableArray *)sortedArray;
+    [self.parcerListTableView reloadData];
+}
+
+
+#pragma mark - Private Methods
+
+-(void)initialSetup {
+    
     self.parcelDataArray   = [NSMutableArray new];
+    self.searchResults = [NSMutableArray new];
     self.parcerListTableView.rowHeight = UITableViewAutomaticDimension;
-    //self.parcerListTableView.estimatedRowHeight = 50;
+    self.parcerListTableView.estimatedRowHeight = 50;
     self.bottomView.alpha = 0.7;
     
     // There's no transition in our storyboard to our search results tableview or navigation controller
     // so we'll have to grab it using the instantiateViewControllerWithIdentifier: method
-    UINavigationController *searchResultsController = [[self storyboard] instantiateViewControllerWithIdentifier:@"TableSearchResultsNavController"];
+    //UINavigationController *searchResultsController = [[self storyboard] instantiateViewControllerWithIdentifier:@"TableSearchResultsNavController"];
+    
+    self.searchController.definesPresentationContext = true;
     
     // Our instance of UISearchController will use searchResults
-    self.searchController = [[UISearchController alloc] initWithSearchResultsController:searchResultsController];
-    
+    self.searchController = [[UISearchController alloc] initWithSearchResultsController:nil];
     // The searchcontroller's searchResultsUpdater property will contain our tableView.
     self.searchController.searchResultsUpdater = self;
+    self.searchController.searchBar.delegate = self;
+    self.searchController.dimsBackgroundDuringPresentation = false;
     
     // The searchBar contained in XCode's storyboard is a leftover from UISearchDisplayController.
     // Don't use this. Instead, we'll create the searchBar programatically.
@@ -106,19 +164,46 @@
     }
 }
 
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    if ([[segue identifier]isEqualToString:@"ParcelListToParcelDetail"]) {
+        ProductDetailViewController *detailViewController = (ProductDetailViewController *)[segue destinationViewController];
+        if (self.searchController.isActive && ![self.searchController.searchBar.text isEqualToString:@""]) {
+            detailViewController.product = [self.searchResults objectAtIndex:self.selectedIndexPath.row];
+        }
+        else {
+            detailViewController.product = [self.parcelDataArray objectAtIndex:self.selectedIndexPath.row];
+        }
+    }
+}
+
 
 #pragma mark - Table view data source
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    // Return the number of rows in the section.
-    return (self.parcelDataArray && [self.parcelDataArray count])?self.parcelDataArray.count:0;
+    
+    
+    if (self.searchController.isActive && ![self.searchController.searchBar.text isEqualToString:@""]) {
+        return self.searchResults.count;
+    }
+    else{
+        // Return the number of rows in the section.
+        return (self.parcelDataArray && [self.parcelDataArray count])?self.parcelDataArray.count:0;
+    }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     @try {
         UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"list" forIndexPath:indexPath];
-        Parcels *parcel = [self.parcelDataArray objectAtIndex:indexPath.row];
+        Parcels *parcel = nil;
+        if (self.searchController.isActive && ![self.searchController.searchBar.text isEqualToString:@""]) {
+            parcel = [self.searchResults objectAtIndex:indexPath.row];
+        }
+        else {
+            parcel = [self.parcelDataArray objectAtIndex:indexPath.row];
+        }
+        
+        
         UILabel *repositoryName =  [(UILabel *)cell viewWithTag:1001];
         
         UILabel *repositoryDescrepion = [(UILabel *)cell viewWithTag:1002];
@@ -149,117 +234,30 @@
     }
 }
 
-#pragma mark - UISearchBarDelegate Methods
-- (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar {
-    
-    return TRUE;
-}
-
-
-
-
--(void)showAlertWithError:(NSError*)aError {
-    [[[UIAlertView alloc] initWithTitle:APPLICATION_NAME message:aError.localizedDescription delegate:nil cancelButtonTitle:OK_MESSAGE otherButtonTitles:nil] show];
-}
-
-/*
- #pragma mark - Navigation
- 
- // In a storyboard-based application, you will often want to do a little preparation before navigation
- - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
- // Get the new view controller using [segue destinationViewController].
- // Pass the selected object to the new view controller.
- }
- */
-- (IBAction)sortByValue:(id)sender {
-    
-    NSSortDescriptor *sortDescriptor;
-    sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"value"
-                                                 ascending:true];
-    NSArray *sortDescriptors = [NSArray arrayWithObject:sortDescriptor];
-    NSArray *sortedArray = [self.parcelDataArray sortedArrayUsingDescriptors:sortDescriptors];
-    
-    self.parcelDataArray = (NSMutableArray *)sortedArray;
-    [self.parcerListTableView reloadData];
-    
-}
-- (IBAction)sortByName:(id)sender {
-    
-    
-    NSSortDescriptor *sortDescriptor;
-    sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"name"
-                                                 ascending:true];
-    NSArray *sortDescriptors = [NSArray arrayWithObject:sortDescriptor];
-    NSArray *sortedArray = [self.parcelDataArray sortedArrayUsingDescriptors:sortDescriptors];
-    
-    self.parcelDataArray = (NSMutableArray *)sortedArray;
-    [self.parcerListTableView reloadData];
-    
-}
-- (IBAction)sortByWight:(id)sender {
-    
-    NSSortDescriptor *sortDescriptor;
-    sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"weight"
-                                                 ascending:true];
-    NSArray *sortDescriptors = [NSArray arrayWithObject:sortDescriptor];
-    NSArray *sortedArray = [self.parcelDataArray sortedArrayUsingDescriptors:sortDescriptors];
-    
-    self.parcelDataArray = (NSMutableArray *)sortedArray;
-    [self.parcerListTableView reloadData];
-}
-
--(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    if ([[segue identifier]isEqualToString:@"ParcelListToParcelDetail"]) {
-        ProductDetailViewController *detailViewController = (ProductDetailViewController *)[segue destinationViewController];
-        detailViewController.product = [self.parcelDataArray objectAtIndex:self.selectedIndexPath.row];
-    }
-}
-
 #pragma mark - UISearchControllerDelegate & UISearchResultsDelegate
-
 // Called when the search bar becomes first responder
 - (void)updateSearchResultsForSearchController:(UISearchController *)searchController
 {
     
     // Set searchString equal to what's typed into the searchbar
     NSString *searchString = self.searchController.searchBar.text;
-    
-    
     [self updateFilteredContentForAirlineName:searchString];
     
-    // If searchResultsController
-    if (self.searchController.searchResultsController) {
-        
-        UINavigationController *navController = (UINavigationController *)self.searchController.searchResultsController;
-        
-        // Present SearchResultsTableViewController as the topViewController
-        SearchResultsTableViewController *vc = (SearchResultsTableViewController *)navController.topViewController;
-        
-        // Update searchResults
-        vc.searchResults = self.searchResults;
-        
-        // And reload the tableView with the new data
-        [vc.tableView reloadData];
-    }
 }
 
+
+
 // Update self.searchResults based on searchString, which is the argument in passed to this method
-- (void)updateFilteredContentForAirlineName:(NSString *)productName
+- (void)updateFilteredContentForAirlineName:(NSString *)searchText
 {
     
-    if (productName == nil) {
-        
-        // If empty the search results are the same as the original data
-        self.searchResults = [self.parcelDataArray mutableCopy];
-    } else {
-        NSPredicate *resultPredicate = [NSPredicate
-                                        predicateWithFormat:@"name contains[c] %@",
-                                        productName];
-            
-            NSArray *results = [self.parcelDataArray filteredArrayUsingPredicate:resultPredicate];
-            self.searchResults = (NSMutableArray *)results;
-
-    }
+    NSPredicate *resultPredicate = [NSPredicate
+                                    predicateWithFormat:@"name contains[c] %@",
+                                    searchText];
+    
+    NSArray *results = [self.parcelDataArray filteredArrayUsingPredicate:resultPredicate];
+    self.searchResults = (NSMutableArray *)results;
+    [self.parcerListTableView reloadData];
 }
 
 

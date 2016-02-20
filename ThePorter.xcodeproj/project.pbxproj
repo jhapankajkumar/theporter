@@ -599,11 +599,13 @@
 			baseConfigurationReference = 920E6585A36540108A9D46B5 /* Pods-ThePorter.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				INFOPLIST_FILE = ThePorter/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.pankaj.ThePorter;
+				PRODUCT_BUNDLE_IDENTIFIER = com.til.ngs;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "d433da8a-be88-4019-80eb-7b54eba7216a";
 			};
 			name = Debug;
 		};
@@ -612,11 +614,13 @@
 			baseConfigurationReference = 1F9775D923155480EDE9D9F4 /* Pods-ThePorter.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				INFOPLIST_FILE = ThePorter/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.pankaj.ThePorter;
+				PRODUCT_BUNDLE_IDENTIFIER = com.til.ngs;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "d433da8a-be88-4019-80eb-7b54eba7216a";
 			};
 			name = Release;
 		};
