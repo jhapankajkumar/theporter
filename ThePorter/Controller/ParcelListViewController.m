@@ -12,13 +12,13 @@
 #import "ProductDetailViewController.h"
 #import "Parcels.h"
 #import "Constants.h"
-@interface ParcelListViewController ()
+#import "SearchResultsTableViewController.h"
+@interface ParcelListViewController ()<UISearchResultsUpdating>
 @property (strong, nonatomic) NSMutableArray *parcelDataArray;
-@property (nonatomic, assign) NSInteger pageNumber;
-@property (nonatomic, assign) NSInteger totalPage;
 @property (nonatomic, assign) SortType defaultSortType;
 @property (nonatomic, assign) OrderBy defaultOrderType;
-@property (nonatomic, assign) BOOL isPageRequestValid;
+@property (nonatomic, strong) UISearchController *searchController;
+@property (nonatomic, strong) NSMutableArray *searchResults;
 
 @property (nonatomic, assign) NSIndexPath *selectedIndexPath;
 
@@ -39,28 +39,37 @@
 }
 
 -(void)initialSetup {
-    [self.searchBar becomeFirstResponder];
+
     self.parcelDataArray   = [NSMutableArray new];
     self.parcerListTableView.rowHeight = UITableViewAutomaticDimension;
-    self.parcerListTableView.estimatedRowHeight = 50;
+    //self.parcerListTableView.estimatedRowHeight = 50;
     self.bottomView.alpha = 0.7;
-    [self.searchBar resignFirstResponder];
+    
+    // There's no transition in our storyboard to our search results tableview or navigation controller
+    // so we'll have to grab it using the instantiateViewControllerWithIdentifier: method
+    UINavigationController *searchResultsController = [[self storyboard] instantiateViewControllerWithIdentifier:@"TableSearchResultsNavController"];
+    
+    // Our instance of UISearchController will use searchResults
+    self.searchController = [[UISearchController alloc] initWithSearchResultsController:searchResultsController];
+    
+    // The searchcontroller's searchResultsUpdater property will contain our tableView.
+    self.searchController.searchResultsUpdater = self;
+    
+    // The searchBar contained in XCode's storyboard is a leftover from UISearchDisplayController.
+    // Don't use this. Instead, we'll create the searchBar programatically.
+    self.searchController.searchBar.frame = CGRectMake(self.searchController.searchBar.frame.origin.x,
+                                                       self.searchController.searchBar.frame.origin.y,
+                                                       self.searchController.searchBar.frame.size.width, 44.0);
+    
+    self.parcerListTableView.tableHeaderView = self.searchController.searchBar;
+    
 }
 
-- (void)showSearchResults {
-    [self.searchBar resignFirstResponder];
-    if (self.searchBar.text.length>0)
-    {
-        [self getParcelList];
-    }
-}
+
 
 - (void)getParcelList {
     
     @try {
-        self.totalPage = 1;
-        self.pageNumber = 1;
-        self.isPageRequestValid = NO;
         [MBProgressHUD showHUDAddedTo:self.view animated:YES];
         DataFetchManager *dataFetchManager = [DataFetchManager new];
         [dataFetchManager getParcelDataWithCompletionBlock:^(NSMutableArray *result, BOOL success, NSError *error) {
@@ -132,7 +141,6 @@
     @try {
         [self.parcerListTableView deselectRowAtIndexPath:indexPath animated:YES];
         self.selectedIndexPath = indexPath;
-        [self.searchBar resignFirstResponder];
         [self performSegueWithIdentifier:@"ParcelListToParcelDetail" sender:self];
     }
     @catch (NSException *exception) {
@@ -147,16 +155,6 @@
     return TRUE;
 }
 
-- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
-    [self.searchBar resignFirstResponder];
-    
-    NSString * searchText =  [self.searchBar.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    if (searchText.length>0)
-    {
-        self.searchBar.text = searchText;
-        [self getParcelList];
-    }
-}
 
 
 
@@ -164,9 +162,6 @@
     [[[UIAlertView alloc] initWithTitle:APPLICATION_NAME message:aError.localizedDescription delegate:nil cancelButtonTitle:OK_MESSAGE otherButtonTitles:nil] show];
 }
 
--(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
-    [self.searchBar resignFirstResponder];
-}
 /*
  #pragma mark - Navigation
  
@@ -217,6 +212,53 @@
     if ([[segue identifier]isEqualToString:@"ParcelListToParcelDetail"]) {
         ProductDetailViewController *detailViewController = (ProductDetailViewController *)[segue destinationViewController];
         detailViewController.product = [self.parcelDataArray objectAtIndex:self.selectedIndexPath.row];
+    }
+}
+
+#pragma mark - UISearchControllerDelegate & UISearchResultsDelegate
+
+// Called when the search bar becomes first responder
+- (void)updateSearchResultsForSearchController:(UISearchController *)searchController
+{
+    
+    // Set searchString equal to what's typed into the searchbar
+    NSString *searchString = self.searchController.searchBar.text;
+    
+    
+    [self updateFilteredContentForAirlineName:searchString];
+    
+    // If searchResultsController
+    if (self.searchController.searchResultsController) {
+        
+        UINavigationController *navController = (UINavigationController *)self.searchController.searchResultsController;
+        
+        // Present SearchResultsTableViewController as the topViewController
+        SearchResultsTableViewController *vc = (SearchResultsTableViewController *)navController.topViewController;
+        
+        // Update searchResults
+        vc.searchResults = self.searchResults;
+        
+        // And reload the tableView with the new data
+        [vc.tableView reloadData];
+    }
+}
+
+// Update self.searchResults based on searchString, which is the argument in passed to this method
+- (void)updateFilteredContentForAirlineName:(NSString *)productName
+{
+    
+    if (productName == nil) {
+        
+        // If empty the search results are the same as the original data
+        self.searchResults = [self.parcelDataArray mutableCopy];
+    } else {
+        NSPredicate *resultPredicate = [NSPredicate
+                                        predicateWithFormat:@"name contains[c] %@",
+                                        productName];
+            
+            NSArray *results = [self.parcelDataArray filteredArrayUsingPredicate:resultPredicate];
+            self.searchResults = (NSMutableArray *)results;
+
     }
 }
 

@@ -12,6 +12,7 @@
 		56EFF8311C787F0600EBF4E0 /* Parcels.m in Sources */ = {isa = PBXBuildFile; fileRef = 56EFF8241C785E4700EBF4E0 /* Parcels.m */; };
 		56EFF8351C78814200EBF4E0 /* ProductDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 56EFF8341C78814200EBF4E0 /* ProductDetailViewController.m */; };
 		56EFF8371C7881E300EBF4E0 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 56EFF8361C7881E300EBF4E0 /* MapKit.framework */; };
+		56EFF83C1C78B6EF00EBF4E0 /* SearchResultsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 56EFF83B1C78B6EF00EBF4E0 /* SearchResultsTableViewController.m */; };
 		56FEF3931C78445700B67890 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 56FEF3921C78445700B67890 /* main.m */; };
 		56FEF39C1C78445700B67890 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 56FEF39A1C78445700B67890 /* Main.storyboard */; };
 		56FEF39E1C78445700B67890 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 56FEF39D1C78445700B67890 /* Assets.xcassets */; };
@@ -51,6 +52,8 @@
 		56EFF8331C78814200EBF4E0 /* ProductDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProductDetailViewController.h; sourceTree = "<group>"; };
 		56EFF8341C78814200EBF4E0 /* ProductDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProductDetailViewController.m; sourceTree = "<group>"; };
 		56EFF8361C7881E300EBF4E0 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		56EFF83A1C78B6EF00EBF4E0 /* SearchResultsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchResultsTableViewController.h; sourceTree = "<group>"; };
+		56EFF83B1C78B6EF00EBF4E0 /* SearchResultsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchResultsTableViewController.m; sourceTree = "<group>"; };
 		56FEF38E1C78445700B67890 /* ThePorter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ThePorter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		56FEF3921C78445700B67890 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		56FEF39B1C78445700B67890 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -228,6 +231,8 @@
 				56EFF8091C7857C700EBF4E0 /* ParcelListViewController.m */,
 				56EFF8331C78814200EBF4E0 /* ProductDetailViewController.h */,
 				56EFF8341C78814200EBF4E0 /* ProductDetailViewController.m */,
+				56EFF83A1C78B6EF00EBF4E0 /* SearchResultsTableViewController.h */,
+				56EFF83B1C78B6EF00EBF4E0 /* SearchResultsTableViewController.m */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -449,6 +454,7 @@
 				56EFF8311C787F0600EBF4E0 /* Parcels.m in Sources */,
 				56EFF80A1C7857C700EBF4E0 /* ParcelListViewController.m in Sources */,
 				56EFF8161C7858C900EBF4E0 /* DataFetchManager.m in Sources */,
+				56EFF83C1C78B6EF00EBF4E0 /* SearchResultsTableViewController.m in Sources */,
 				56EFF8351C78814200EBF4E0 /* ProductDetailViewController.m in Sources */,
 				56FEF3CE1C78576200B67890 /* AppDelegate.m in Sources */,
 				56FEF3931C78445700B67890 /* main.m in Sources */,
@@ -594,6 +600,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = ThePorter/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.pankaj.ThePorter;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -606,6 +613,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = ThePorter/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.pankaj.ThePorter;
 				PRODUCT_NAME = "$(TARGET_NAME)";

@@ -4,8 +4,6 @@
 # use_frameworks!
 
 target 'ThePorter' do
-    pod 'RestKit', '0.26.0'
-    pod 'RestKit/Testing', '0.26.0'
     pod 'MBProgressHUD', '~> 0.9.2'
 end
 

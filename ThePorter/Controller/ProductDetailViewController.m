@@ -30,7 +30,7 @@
 }
 
 - (void)setProductInfromation {
-    
+    self.title =  self.product.name;
     self.productType.text = self.product.type;
     self.productQuantity.text = [NSString stringWithFormat:@"%ld",(long)self.product.quantiy];
     self.productPrice.text  = [NSString stringWithFormat:@"%ld",(long)self.product.value];
@@ -134,6 +134,8 @@
             
         }
     }];
+}
+- (IBAction)shareButtonClicked:(id)sender {
 }
 
 /*

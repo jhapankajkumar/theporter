@@ -4,16 +4,6 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>AFNetworking.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>ISO8601DateFormatterValueTransformer.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
 		<key>MBProgressHUD.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -24,60 +14,10 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>RKValueTransformers.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>RestKit.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>SOCKit.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>TransitionKit.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>080AF914A09167DB5759A733917B840F</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>2D473F8769A6F9EE3EE9B4680E829141</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>36E925CC930C8196E95B182182CC0EE1</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>61681BF0E677683490353B846C61A129</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>825EE206430BBFDCB025AD287DE262D5</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>C47E006176ABF4755350B88C088C3F0D</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>C520AA17687D27976F4E5484324F5B2C</key>
+		<key>E6F3E92956588F680C18841049710278</key>
 		<dict>
 			<key>primary</key>
 			<true/>
