@@ -35,7 +35,7 @@
     self.productType.text = self.product.type;
     self.productQuantity.text = [NSString stringWithFormat:@"%ld",(long)self.product.quantiy];
     self.productPrice.text  = [NSString stringWithFormat:@"%ld",(long)self.product.value];
-    self.productWeight.text  = [NSString stringWithFormat:@"kg %ld",(long)self.product.weight];
+    self.productWeight.text  = [NSString stringWithFormat:@"kg %@",[NSNumber numberWithDouble:self.product.weight]];
     self.productName.text  = self.product.name;
     self.productImage.image = [UIImage imageNamed:@"placeholder.png"];
     self.productColor.backgroundColor = [self colorFromHexString:self.product.color];

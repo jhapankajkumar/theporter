@@ -135,7 +135,8 @@
             [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
             if (success && result.count) {
                 self.parcelDataArray  = result;
-                [self sortByName:nil];
+//                [self sortByName:nil];
+                [self.parcerListTableView reloadData];
                 self.bottomView.alpha = 1.0;
                 [self.parcerListTableView setHidden:NO];
                 NSInteger hits = -1;
